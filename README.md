@@ -27,7 +27,7 @@ A NestJS-based task management system with real-time updates using WebSocket.
 1. Clone the repository:
 ```bash
 git clone <repository-url>
-cd task-management-system
+cd tms
 ```
 
 2. Install dependencies:
