@@ -76,16 +76,27 @@ npm run start:dev
 
 ### Server to Client Events
 
-- `taskCreated` - Emitted when a new task is created
-- `taskUpdated` - Emitted when a task is updated
-- `taskDeleted` - Emitted when a task is deleted
+- `task.created` - Emitted when a new task is created
+- `task.updated` - Emitted when a task is updated
+- `task.deleted` - Emitted when a task is deleted
 
 ### WebSocket Client Example
 
 ```typescript
 import { io } from 'socket.io-client';
 
-const socket = io('ws://localhost:3000/tasks');
+const auth_token = 'AUTH_TOKEN';
+const local = 'ws://localhost:3000/tasks';
+
+const socket = io(local,
+        {
+           path: '/api/ws',
+           transports: ['websocket'],
+           withCredentials: true,
+           auth: {
+              token: auth_token,
+           }
+        });
 
 // Connection event handlers
 socket.on('connect', () => {
@@ -97,15 +108,15 @@ socket.on('disconnect', () => {
 });
 
 // Task event handlers
-socket.on('taskCreated', (task) => {
+socket.on('task.created', (task) => {
   console.log('New task created:', task);
 });
 
-socket.on('taskUpdated', (task) => {
+socket.on('task.updated', (task) => {
   console.log('Task updated:', task);
 });
 
-socket.on('taskDeleted', (taskId) => {
+socket.on('task.deleted', (taskId) => {
   console.log('Task deleted:', taskId);
 });
 ```
@@ -114,9 +125,24 @@ socket.on('taskDeleted', (taskId) => {
 
 ```
 src/
+├── auth/
+│   ├── controllers/
+│   │   └── auth.controller.ts
+│   ├── dto/
+│   │   └── auth.dto.ts
+│   ├── services/
+│   │   └── auth.service.ts
+│   ├── strategies/
+│   │   ├── jwt.strategy.ts
+│   ├── types/
+│   │   └── index.ts
+│   └── auth.module.ts
 ├── common/
-│   └── filters/
-│       └── global-exception.filter.ts
+│   ├──filters/
+│   │  └── global-exception.filter.ts
+│   └── guards/
+│       ├── auth.guard.ts
+│       └── refresh.guard.ts
 ├── tasks/
 │   ├── controllers/
 │   │   └── tasks.controller.ts
@@ -127,12 +153,20 @@ src/
 │   ├── entities/
 │   │   └── task.entity.ts
 │   ├── enums/
-│   │   └── task-status.enum.ts
+│   │   ├── task-status.enum.ts
+│   │   └── task.events.ts
 │   ├── gateways/
 │   │   └── tasks.gateway.ts
 │   ├── services/
-│   │   └── tasks.service.ts
+│   │   ├── tasks.service.ts
+│   │   └── tasks.service.spec.ts
 │   └── tasks.module.ts
+├── users/
+│   ├── entities/
+│   │   └── user.entity.ts
+│   ├── services/
+│   │   └── users.service.ts
+│   └── users.module.ts
 ├── app.module.ts
 └── main.ts
 ```
