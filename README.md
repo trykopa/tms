@@ -6,12 +6,16 @@ A NestJS-based task management system with real-time updates using WebSocket.
 
 - CRUD operations for tasks
 - Real-time updates using WebSocket
+- Websocket authentication
 - Pagination and filtering
 - Input validation using DTOs
 - Global exception handling
 - Swagger API documentation
 - TypeScript support
 - SQLite database (file-based, no separate server needed)
+- JWT authentication
+- User registration and login
+- Refresh token support
 
 ## Prerequisites
 
@@ -41,7 +45,8 @@ DB_DATABASE=db/tasks.db
 
 4. Create the database directory:
 ```bash
-mkdir db
+mkdir -p db
+chmod 755 db
 ```
 
 ## Running the Application
@@ -57,6 +62,12 @@ npm run start:dev
 - WebSocket endpoint: ws://localhost:3000/tasks
 
 ## API Endpoints
+
+### Auth
+
+- `POST /auth/register` - Register a new user
+- `POST /auth/login` - Login and get JWT tokens
+- `POST /auth/refresh` - Refresh JWT tokens
 
 ### Tasks
 
@@ -199,15 +210,15 @@ src/
 ```json
 {
   "scripts": {
-    "build": "nest build",
-    "start": "nest start",
-    "start:dev": "nest start --watch",
-    "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/main",
-    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\"",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:cov": "jest --coverage"
+     "build": "nest build",
+     "start": "nest start",
+     "start:dev": "nest start --watch",
+     "start:debug": "nest start --debug --watch",
+     "start:prod": "node dist/main",
+     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
+     "test": "jest",
+     "test:watch": "jest --watch",
+     "test:cov": "jest --coverage"
   }
 }
 ```
@@ -238,7 +249,6 @@ npm run test:cov
    - Consider connection pooling
 
 3. **WebSocket**:
-   - Implement authentication if needed
    - Consider using Redis for scaling WebSocket
    - Handle reconnection strategies
 
